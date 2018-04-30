@@ -1,3 +1,4 @@
+// v.1.0
 #include <windows.h>
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -67,16 +68,16 @@ void angka(int x, int y, int counter){
      int satuan= counter%10;
      glColor3f(1,0,0);
      if (satuan==0){
-        nol(x*kotak, y*kotak, false);
+        nol(x*kotak +1, y*kotak+1, false);
      }else if(satuan==2){
-        dua(x*kotak, y*kotak, false);
+        dua(x*kotak+1, y*kotak+1, false);
      }else if(satuan==3){
-        tiga(x*kotak, y*kotak, false);
+        tiga(x*kotak+1, y*kotak+1, false);
      }
      if(puluhan==2){
-        dua(x*kotak, y*kotak, true);
+        dua(x*kotak+1, y*kotak+1, true);
      }else if(puluhan==3){
-        tiga(x*kotak, y*kotak, true);
+        tiga(x*kotak+1, y*kotak+1, true);
      }
 }
 
@@ -143,7 +144,10 @@ void ular(float x1, float y1, float x2, float y2){
 
 void papan(){
  glColor3f(1,0,0); //warna border luar
- glRectf(1.85,-0.15, 44.15,8.15);
+ glRectf(1.85,-0.15, 44.15,0);
+ glRectf(1.85,8, 44.15,8.15);
+ glRectf(1.85,-0.15, 2,8.15);
+ glRectf(44,-0.15, 44.15,8.15);
  int counter=1;
  int max_kolom=22;
  for (int y=0; y<4; y++){
@@ -162,7 +166,7 @@ void papan(){
          glEnd();
      }for (int x=1; x<=21; x++){
          if (y%2==ganjil ){
-            angka(max_kolom-x,y,counter);
+            angka(max_kolom-x, y,counter);
          }else {
             angka(x,y,counter);
          }
@@ -233,14 +237,13 @@ void input(unsigned char key, int x, int y){
         cout<<"-----------------------------------------------"<<endl;
         cout<<"----------------GAME RESET---------------------"<<endl;
         cout<<"-----------------------------------------------"<<endl;
-        cout<<"Tekan [Spasi] untuk bermain"<<endl;nd
+        cout<<"Tekan [Spasi] untuk bermain"<<endl;
     }else if (!menang && key == ' '){
         int dadu = rand() % 6 +1;
         cout << "Giliran Pemain "<<turn<<endl;
         cout << "Angka Hasil Dadu: "<<dadu << endl;
         if (turn==1){
             for (int i=0; i<dadu; i++){
-                display();
                 if (dy1%4 == 0){
                     if (dx1 == 40){
                         dy1 += kotak;
@@ -260,6 +263,8 @@ void input(unsigned char key, int x, int y){
                     menang=true;
                     break;
                 }
+                display();
+                Sleep(100);
             }
             //Cek kotak ular or tangga
             //Kotak x_gambar-1
@@ -316,6 +321,9 @@ void input(unsigned char key, int x, int y){
                     menang=true;
                     break;
                 }
+
+                display();
+                Sleep(100);
             }
             //cek ular tangga
             //Kotak gambar-1

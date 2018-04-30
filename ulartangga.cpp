@@ -1,3 +1,4 @@
+// v.1.0
 #include <windows.h>
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -67,21 +68,21 @@ void angka(int x, int y, int counter){
      int satuan= counter%10;
      glColor3f(1,0,0);
      if (satuan==0){
-        nol(x*kotak, y*kotak, false);
+        nol(x*kotak +1, y*kotak+1, false);
      }else if(satuan==2){
-        dua(x*kotak, y*kotak, false);
+        dua(x*kotak+1, y*kotak+1, false);
      }else if(satuan==3){
-        tiga(x*kotak, y*kotak, false);
+        tiga(x*kotak+1, y*kotak+1, false);
      }
      if(puluhan==2){
-        dua(x*kotak, y*kotak, true);
+        dua(x*kotak+1, y*kotak+1, true);
      }else if(puluhan==3){
-        tiga(x*kotak, y*kotak, true);
+        tiga(x*kotak+1, y*kotak+1, true);
      }
 }
 
 void tangga(float x1, float y1, float x2, float y2){
- glColor3f(0.84, 0.2, 0.04);
+ glColor3f(0.84, 0.46, 0.04);
  if (y1==y2){
      for (float x=x1; x<x2-1; x+=1){
          glRectf(x,     y1-0.6, x+2,   y1-0.4);
@@ -108,13 +109,12 @@ void tangga(float x1, float y1, float x2, float y2){
         glVertex2f(x2+0.4, y2-derajat);
         glVertex2f(x2+0.6, y2-derajat);
      glEnd();
-     int banyak_tangga=(y2-y1)/2;
-     for (float i=0.5; i<banyak_tangga; i+=0.5){
+     for (float i=0.5; i<5; i+=0.5){
         glBegin(GL_QUADS);
-            glVertex2f(x1+((x2-x1)*i/banyak_tangga)-0.4,  y1+((y2-y1)*i/banyak_tangga)+0.1 +derajat); //kanan atas
-            glVertex2f(x1+((x2-x1)*i/banyak_tangga)-0.55, y1+((y2-y1)*i/banyak_tangga)-0.1 +derajat); //kanan bwh
-            glVertex2f(x1+((x2-x1)*i/banyak_tangga)+0.4,  y1+((y2-y1)*i/banyak_tangga)-0.1 -derajat);
-            glVertex2f(x1+((x2-x1)*i/banyak_tangga)+0.55, y1+((y2-y1)*i/banyak_tangga)+0.1 -derajat);
+            glVertex2f(x1+((x2-x1)*i/5)-0.4,  y1+((y2-y1)*i/5)+0.1 +derajat); //kanan atas
+            glVertex2f(x1+((x2-x1)*i/5)-0.55, y1+((y2-y1)*i/5)-0.1 +derajat); //kanan bwh
+            glVertex2f(x1+((x2-x1)*i/5)+0.4,  y1+((y2-y1)*i/5)-0.1 -derajat);
+            glVertex2f(x1+((x2-x1)*i/5)+0.55, y1+((y2-y1)*i/5)+0.1 -derajat);
         glEnd();
      }
  }
@@ -122,19 +122,19 @@ void tangga(float x1, float y1, float x2, float y2){
 
 void ular(float x1, float y1, float x2, float y2){
     glBegin(GL_QUADS);
-        glColor3f(1, 0, 1);
+        glColor3f(0.49, 0.49, 0.67);
         glVertex2f(x1-0.25, y1+ 0*(y2-y1)/3);
         glVertex2f(x1+0.25, y1+ 0*(y2-y1)/3);
         glVertex2f(x1+ (x2-x1)/2+0.25, y1+ 1*(y2-y1)/3);
         glVertex2f(x1+ (x2-x1)/2-0.25, y1+ 1*(y2-y1)/3);
 
-        glColor3f(1, 0.5,1);
+        glColor3f(0.35, 0.25,0.29);
         glVertex2f(x1+ (x2-x1)/2+0.25, y1+ 1*(y2-y1)/3);
         glVertex2f(x1+ (x2-x1)/2-0.25, y1+ 1*(y2-y1)/3);
         glVertex2f(x1+ (x2-x1)/2-0.25, y1+ 2*(y2-y1)/3);
         glVertex2f(x1+ (x2-x1)/2+0.25, y1+ 2*(y2-y1)/3);
 
-        glColor3f(1, 0, 1);
+        glColor3f(0.49, 0.49, 0.67);
         glVertex2f(x1+ (x2-x1)/2-0.25, y1+ 2*(y2-y1)/3);
         glVertex2f(x1+ (x2-x1)/2+0.25, y1+ 2*(y2-y1)/3);
         glVertex2f(x2+0.25, y1+ 3*(y2-y1)/3);
@@ -144,16 +144,19 @@ void ular(float x1, float y1, float x2, float y2){
 
 void papan(){
  glColor3f(1,0,0); //warna border luar
- glRectf(1.85,-0.15, 44.15,8.15);
+ glRectf(1.85,-0.15, 44.15,0);
+ glRectf(1.85,8, 44.15,8.15);
+ glRectf(1.85,-0.15, 2,8.15);
+ glRectf(44,-0.15, 44.15,8.15);
  int counter=1;
  int max_kolom=22;
  for (int y=0; y<4; y++){
      for (int x=1; x<=21; x++){
          if (x%2==genap && y%2==ganjil ||
              x%2==ganjil && y%2==genap){
-            glColor3f(0.25, 0.25, 1);
+            glColor3f(0.56, 0.77, 0.77);
          } else {
-            glColor3f(1, 1, 0.0);
+            glColor3f(0.2, 0.4, 0.6);
          }
          glBegin(GL_POLYGON);
              glVertex2f(x*kotak,    y*kotak);
@@ -163,7 +166,7 @@ void papan(){
          glEnd();
      }for (int x=1; x<=21; x++){
          if (y%2==ganjil ){
-            angka(max_kolom-x,y,counter);
+            angka(max_kolom-x, y,counter);
          }else {
             angka(x,y,counter);
          }
@@ -179,7 +182,7 @@ void papan(){
 }
 
 void pemain1(){
-    glColor3f(0,0,0);
+    glColor3f(1, 0.5, 0.5);
     glBegin(GL_QUADS);
         glVertex2f(2.75+dx1,1.15+dy1);
         glVertex2f(3.25+dx1,1.15+dy1);
@@ -189,7 +192,7 @@ void pemain1(){
 }
 
 void pemain2(){
-    glColor3f(0,1,0);
+    glColor3f(1,1,1);
     glBegin(GL_QUADS);
         glVertex2f(2.75+dx2,0.5+dy2);
         glVertex2f(3.00+dx2,0.5+dy2);
@@ -241,7 +244,6 @@ void input(unsigned char key, int x, int y){
         cout << "Angka Hasil Dadu: "<<dadu << endl;
         if (turn==1){
             for (int i=0; i<dadu; i++){
-                display();
                 if (dy1%4 == 0){
                     if (dx1 == 40){
                         dy1 += kotak;
@@ -261,6 +263,8 @@ void input(unsigned char key, int x, int y){
                     menang=true;
                     break;
                 }
+                display();
+                Sleep(100);
             }
             //Cek kotak ular or tangga
             //Kotak x_gambar-1
@@ -317,6 +321,9 @@ void input(unsigned char key, int x, int y){
                     menang=true;
                     break;
                 }
+
+                display();
+                Sleep(100);
             }
             //cek ular tangga
             //Kotak gambar-1

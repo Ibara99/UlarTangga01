@@ -24,3 +24,11 @@ v.1.2
       - Masalah? Masih tembus pandang. Layering masih ancur. and somehow warnanya berantakan. Dan masih jelek banget sumpah.
       
       - Objek Observer belum dibuat;
+
+v.1.3
+
+      - Memperbaiki warna
+      - Menambah Transparan
+      - Menambah objek observer
+      - mengubah ortho X menjadi 0 s/d 42
+      - Mengubah input tombol rotate, menambah input gerak observer

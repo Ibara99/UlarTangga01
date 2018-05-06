@@ -28,7 +28,12 @@ v.1.2
 v.1.3
 
       - Memperbaiki warna
+      
       - Menambah Transparan
+      
       - Menambah objek observer
+      
       - mengubah ortho X menjadi 0 s/d 42
+      
       - Mengubah input tombol rotate, menambah input gerak observer
+      

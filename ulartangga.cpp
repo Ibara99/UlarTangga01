@@ -1,5 +1,4 @@
-// v.1.2
-
+// v.1.3
 #include <windows.h>
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -23,6 +22,8 @@ int dx1=0;
 int dy1=0;
 int dx2=0;
 int dy2=0;
+float dx_ob = 0;
+float dy_ob = 0;
 
 void box(float x1, float y1, float z1, float x2, float y2, float z2){
     //kiri bawah belakang ----- kanan atas depan
@@ -173,7 +174,7 @@ void tiga(int x,int y, bool puluhan){
 void angka(int x, int y, int counter){
      int puluhan= counter/10;
      int satuan= counter%10;
-     glColor3f(1,0,0);
+     glColor4f(1,0,0, 1.0);
      if (satuan==0){
         nol(x*kotak +1, y*kotak+1, false);
      }else if(satuan==2){
@@ -189,7 +190,7 @@ void angka(int x, int y, int counter){
 }
 
 void tangga(float x1, float y1, float x2, float y2){
- glColor3f(0.84, 0.46, 0.04);
+ glColor4f(0.84, 0.46, 0.04, 1.0);
  if (y1==y2){
      for (float x=x1; x<x2-1; x+=1){
          box(x,     y1-0.6,0, x+2,   y1-0.4,0.5);
@@ -207,18 +208,10 @@ void tangga(float x1, float y1, float x2, float y2){
     }
 
     for (float i=0.5; i<5; i+=0.5){
-        box24(x1+((x2-x1)*i/5)-0.4,  y1+((y2-y1)*i/5)+0.1 +derajat, 0,   
-
-       x1+((x2-x1)*i/5)-0.55, y1+((y2-y1)*i/5)-0.1 +derajat, 0,
-              x1+((x2-x1)*i/5)+0.4,  y1+((y2-y1)*i/5)-0.1 -derajat, 0,   
-
-       x1+((x2-x1)*i/5)+0.55, y1+((y2-y1)*i/5)+0.1 -derajat, 0,
-              x1+((x2-x1)*i/5)-0.4,  y1+((y2-y1)*i/5)+0.1 +derajat, 1,   
-
-       x1+((x2-x1)*i/5)-0.55, y1+((y2-y1)*i/5)-0.1 +derajat, 1,
-              x1+((x2-x1)*i/5)+0.4,  y1+((y2-y1)*i/5)-0.1 -derajat, 1,   
-
-       x1+((x2-x1)*i/5)+0.55, y1+((y2-y1)*i/5)+0.1 -derajat, 1);
+        box24(x1+((x2-x1)*i/5)-0.4,  y1+((y2-y1)*i/5)+0.1 +derajat, 0,          x1+((x2-x1)*i/5)-0.55, y1+((y2-y1)*i/5)-0.1 +derajat, 0,
+              x1+((x2-x1)*i/5)+0.4,  y1+((y2-y1)*i/5)-0.1 -derajat, 0,          x1+((x2-x1)*i/5)+0.55, y1+((y2-y1)*i/5)+0.1 -derajat, 0,
+              x1+((x2-x1)*i/5)-0.4,  y1+((y2-y1)*i/5)+0.1 +derajat, 1,          x1+((x2-x1)*i/5)-0.55, y1+((y2-y1)*i/5)-0.1 +derajat, 1,
+              x1+((x2-x1)*i/5)+0.4,  y1+((y2-y1)*i/5)-0.1 -derajat, 1,          x1+((x2-x1)*i/5)+0.55, y1+((y2-y1)*i/5)+0.1 -derajat, 1);
     }
 
     box24(x1-0.6, y1+derajat, 1,    x1-0.4, y1+derajat, 1,
@@ -235,71 +228,33 @@ void tangga(float x1, float y1, float x2, float y2){
 }
 
 void ular(float x1, float y1, float x2, float y2){
-    glColor3f(0.49, 0.49, 0.67);
-    box24(x1-0.25, y1+ 0*(y2-y1)/3, 1,                  x1+0.25, y1+ 0*
-
-(y2-y1)/3, 1,
-              x1+ (x2-x1)/2+0.25, y1+ 1*(y2-y1)/3, 1,   x1+ (x2-x1)/2-
-
-0.25, y1+ 1*(y2-y1)/3, 1,
-              x1-0.25, y1+ 0*(y2-y1)/3, 0,              x1+0.25, y1+ 0*
-
-(y2-y1)/3, 0,
-              x1+ (x2-x1)/2+0.25, y1+ 1*(y2-y1)/3, 0,   x1+ (x2-x1)/2-
-
-0.25, y1+ 1*(y2-y1)/3, 0);
-    glColor3f(0.35, 0.25,0.29);
-    box24(x1+ (x2-x1)/2+0.25, y1+ 1*(y2-y1)/3,1,        x1+ (x2-x1)/2-
-
-0.25, y1+ 1*(y2-y1)/3,1,
-          x1+ (x2-x1)/2-0.25, y1+ 2*(y2-y1)/3,1,        x1+ (x2-
-
-x1)/2+0.25, y1+ 2*(y2-y1)/3,1,
-          x1+ (x2-x1)/2+0.25, y1+ 1*(y2-y1)/3,0,        x1+ (x2-x1)/2-
-
-0.25, y1+ 1*(y2-y1)/3,0,
-          x1+ (x2-x1)/2-0.25, y1+ 2*(y2-y1)/3,0,        x1+ (x2-
-
-x1)/2+0.25, y1+ 2*(y2-y1)/3,0);
-    glColor3f(0.49, 0.49, 0.67);
-    box24(x1+ (x2-x1)/2-0.25, y1+ 2*(y2-y1)/3,1,        x1+ (x2-
-
-x1)/2+0.25, y1+ 2*(y2-y1)/3,1,
-          x2+0.25, y1+ 3*(y2-y1)/3,1,                   x2-0.25, y1+ 3*
-
-(y2-y1)/3,1,
-          x1+ (x2-x1)/2-0.25, y1+ 2*(y2-y1)/3,0,        x1+ (x2-
-
-x1)/2+0.25, y1+ 2*(y2-y1)/3,0,
-          x2+0.25, y1+ 3*(y2-y1)/3,0,                   x2-0.25, y1+ 3*
-
-(y2-y1)/3,0);
+    glColor4f(0.49, 0.49, 0.67, 1.0);
+    box24(x1-0.25, y1+ 0*(y2-y1)/3, 1,                  x1+0.25, y1+ 0*(y2-y1)/3, 1,
+              x1+ (x2-x1)/2+0.25, y1+ 1*(y2-y1)/3, 1,   x1+ (x2-x1)/2-0.25, y1+ 1*(y2-y1)/3, 1,
+              x1-0.25, y1+ 0*(y2-y1)/3, 0,              x1+0.25, y1+ 0*(y2-y1)/3, 0,
+              x1+ (x2-x1)/2+0.25, y1+ 1*(y2-y1)/3, 0,   x1+ (x2-x1)/2-0.25, y1+ 1*(y2-y1)/3, 0);
+    glColor4f(0.35, 0.25,0.29, 1.0);
+    box24(x1+ (x2-x1)/2+0.25, y1+ 1*(y2-y1)/3,1,        x1+ (x2-x1)/2-0.25, y1+ 1*(y2-y1)/3,1,
+          x1+ (x2-x1)/2-0.25, y1+ 2*(y2-y1)/3,1,        x1+ (x2-x1)/2+0.25, y1+ 2*(y2-y1)/3,1,
+          x1+ (x2-x1)/2+0.25, y1+ 1*(y2-y1)/3,0,        x1+ (x2-x1)/2-0.25, y1+ 1*(y2-y1)/3,0,
+          x1+ (x2-x1)/2-0.25, y1+ 2*(y2-y1)/3,0,        x1+ (x2-x1)/2+0.25, y1+ 2*(y2-y1)/3,0);
+    glColor4f(0.49, 0.49, 0.67, 1.0);
+    box24(x1+ (x2-x1)/2-0.25, y1+ 2*(y2-y1)/3,1,        x1+ (x2-x1)/2+0.25, y1+ 2*(y2-y1)/3,1,
+          x2+0.25, y1+ 3*(y2-y1)/3,1,                   x2-0.25, y1+ 3*(y2-y1)/3,1,
+          x1+ (x2-x1)/2-0.25, y1+ 2*(y2-y1)/3,0,        x1+ (x2-x1)/2+0.25, y1+ 2*(y2-y1)/3,0,
+          x2+0.25, y1+ 3*(y2-y1)/3,0,                   x2-0.25, y1+ 3*(y2-y1)/3,0);
 }
 
 void papan(){
- glColor3f(1,0,0); //warna border luar
- box(1.85,-0.15,0, 44.15,0,0.5);
- box(1.85,8,0, 44.15,8.15,0.5);
- box(1.85,-0.15,0, 2,8.15,0.5);
- box(44,-0.15,0, 44.15,8.15,0.5);
+ glColor4f(1,0,0, 1.0); //warna border luar
+ box(-0.15,-0.15,-0.2,      42.15,0,0.5);
+ box(-0.15,8,-0.2,          42.15,8.15,0.5);
+ box(-0.15,-0.15,-0.2,      0,8.15,0.5);
+ box(42,-0.15,-0.2,         42.15,8.15,0.5);
  int counter=1;
- int max_kolom=22;
+ int max_kolom=20;
  for (int y=0; y<4; y++){
-     for (int x=1; x<=21; x++){
-         if (x%2==genap && y%2==ganjil ||
-             x%2==ganjil && y%2==genap){
-            glColor3f(0.56, 0.77, 0.77);
-         } else {
-            glColor3f(0.2, 0.4, 0.6);
-         }
-         glBegin(GL_POLYGON);
-            box(x*kotak, y*kotak, -0.2, x*kotak+2, y*kotak+2, -0.1);
-//             glVertex2f(x*kotak,    y*kotak);
-//             glVertex2f(x*kotak+2,  y*kotak);
-//             glVertex2f(x*kotak+2,  y*kotak+2);
-//             glVertex2f(x*kotak,    y*kotak+2);
-         glEnd();
-     }for (int x=1; x<=21; x++){
+     for (int x=0; x<21; x++){
          if (y%2==ganjil ){
             angka(max_kolom-x, y,counter);
          }else {
@@ -309,29 +264,50 @@ void papan(){
      }
      //border
      if (y%2==ganjil){
-        glRectf(1*kotak, y*kotak-0.05, 21*kotak, y*kotak+0.05);
+        box(0*kotak, y*kotak-0.05, 0,     20*kotak, y*kotak+0.05, 0.5);
      }else if (y!=0){
-        glRectf(2*kotak, y*kotak-0.05, 22*kotak, y*kotak+0.05);
+        box(1*kotak, y*kotak-0.05,0,      21*kotak, y*kotak+0.05, 0.5);
+     }
+
+     for (int x=0; x<21; x++){
+         if (x%2==genap && y%2==ganjil ||
+             x%2==ganjil && y%2==genap){
+            glColor4f(0.56, 0.77, 0.77, 0.5);
+         } else {
+            glColor4f(0.2, 0.4, 0.6, 0.5);
+         }
+//         glBegin(GL_POLYGON);
+            box(x*kotak, y*kotak, -0.2, x*kotak+2, y*kotak+2, 0);
+//             glVertex2f(x*kotak,    y*kotak);
+//             glVertex2f(x*kotak+2,  y*kotak);
+//             glVertex2f(x*kotak+2,  y*kotak+2);
+//             glVertex2f(x*kotak,    y*kotak+2);
+//         glEnd();
      }
  }
 }
 
 void pemain1(){
-    glColor3f(1, 0.5, 0.5);
-    box24(2.75+dx1,1.15+dy1,1,           3.25+dx1,1.15+dy1,1,
-            3.25+dx1,1.5+dy1,1,            2.75+dx1,1.5+dy1,1,
-            2.75+dx1,1.15+dy1,0,           3.25+dx1,1.15+dy1,0,
-            3.25+dx1,1.5+dy1,0,            2.75+dx1,1.5+dy1,0);
+    glColor4f(1, 0.5, 0.5, 1.0);
+    box24(0.75+dx1,1.15+dy1,1,           1.25+dx1,1.15+dy1,1,
+            1.25+dx1,1.5+dy1,1,            0.75+dx1,1.5+dy1,1,
+            0.75+dx1,1.15+dy1,0,           1.25+dx1,1.15+dy1,0,
+            1.25+dx1,1.5+dy1,0,            0.75+dx1,1.5+dy1,0);
 
 }
 
 void pemain2(){
-    glColor3f(1,1,1);
-    box24(2.75+dx2,0.5+dy2,1,        3.00+dx2,0.5+dy2,1,
-          3.25+dx2,1.00+dy2,1,       2.75+dx2,1.00+dy2,1,
-          2.75+dx2,0.5+dy2,0,        3.00+dx2,0.5+dy2,0,
-          3.25+dx2,1.00+dy2,0,       2.75+dx2,1.00+dy2,0);
+    glColor4f(0.5,1,0.5, 1.0);
+    box24(0.75+dx2,0.5+dy2,1,        1.00+dx2,0.5+dy2,1,
+          1.25+dx2,1.00+dy2,1,       0.75+dx2,1.00+dy2,1,
+          0.75+dx2,0.5+dy2,0,        1.00+dx2,0.5+dy2,0,
+          1.25+dx2,1.00+dy2,0,       0.75+dx2,1.00+dy2,0);
 
+}
+
+void observer(){
+    glColor4f(1,1,1, 1.0);
+    box(0+dx_ob,0+dy_ob,0,  0.5+dx_ob, 0.5+dy_ob, 0.5);
 }
 
 void display(){
@@ -345,48 +321,70 @@ void display(){
 //       5-0.6, 0+0.25, 0,        5-0.4, 0+0.25,0,
 //       11-0.4, 7+0.25,0,        11-0.6, 7+0.25,0);
 
- papan();
- ular(4*kotak+1,    1*kotak+1, 2*kotak+1,   3*kotak+1);
- ular(10*kotak+1,   0*kotak+1, 15*kotak+1,  3*kotak+1);
- ular(19*kotak+1,   0*kotak+1, 17*kotak+1,  2*kotak+1);
- ular(10*kotak+1,    1*kotak+1, 6*kotak+1,   3*kotak+1);
 
- tangga(2*kotak+1,  0*kotak+1, 5*kotak+1,   3*kotak+1);
- tangga(5*kotak+1,  1*kotak+1, 9*kotak+1,   1*kotak+1);
- tangga(16*kotak+1, 0*kotak+1, 16*kotak+1,  3*kotak+1);
- tangga(10*kotak+1, 2*kotak+1, 15*kotak+1,  2*kotak+1);
- tangga(21*kotak+1, 0*kotak+1, 18*kotak+1,  3*kotak+1);
+ ular(3*kotak+1,    1*kotak+1, 1*kotak+1,   3*kotak+1);
+ ular(9*kotak+1,   0*kotak+1, 14*kotak+1,  3*kotak+1);
+ ular(18*kotak+1,   0*kotak+1, 16*kotak+1,  2*kotak+1);
+ ular(9*kotak+1,    1*kotak+1, 5*kotak+1,   3*kotak+1);
+
+ tangga(1*kotak+1,  0*kotak+1, 4*kotak+1,   3*kotak+1);
+ tangga(4*kotak+1,  1*kotak+1, 8*kotak+1,   1*kotak+1);
+ tangga(15*kotak+1, 0*kotak+1, 15*kotak+1,  3*kotak+1);
+ tangga(9*kotak+1, 2*kotak+1, 14*kotak+1,  2*kotak+1);
+ tangga(20*kotak+1, 0*kotak+1, 17*kotak+1,  3*kotak+1);
 
  pemain1();
  pemain2();
- glutSwapBuffers();
-// glFlush();
+ observer();
+ papan();
+// glutSwapBuffers();
+ glFlush();
 }
 
 void input(unsigned char key, int x, int y){
     if (key=='q' || key=='Q') {
         exit(0);
-    } else if(key=='a' || key=='A'){
-         glTranslated(23, 4.25,0);
+    } else if(key=='j' || key=='J'){
+         glTranslated(21, 4.25,0);
          glRotated(1, 0,1,0);
-         glTranslated(-23, -4.25,0);
-         display();
-    } else if(key=='d' || key=='D'){
-         glTranslated(23, 4.25,0);
+         glTranslated(-21, -4.25,0);
+         glutPostRedisplay();
+//         display();
+    } else if(key=='l' || key=='L'){
+         glTranslated(21, 4.25,0);
          glRotated(-1, 0,1,0);
-         glTranslated(-23, -4.25,0);
-         display();
-    } else if(key=='w' ){
-         glTranslated(23, 4.0,0);
+         glTranslated(-21, -4.25,0);
+         glutPostRedisplay();
+//         display();
+    } else if(key=='i' || key=='I' ){
+         glTranslated(21, 4.0,0);
          glRotated(1, 1,0,0);
-         glTranslated(-23, -4.0,0);
-         display();
-    } else if(key=='s' ){
-         glTranslated(21.25, 4.0,0);
+         glTranslated(-21, -4.0,0);
+         glutPostRedisplay();
+//         display();
+    } else if(key=='k' || key=='K' ){
+         glTranslated(21, 4.0,0);
          glRotated(-1, 1,0,0);
-         glTranslated(-21.25, -4.0,0);
-         display();
-    }else if(key=='r'|| key=='R'){
+         glTranslated(-21, -4.0,0);
+         glutPostRedisplay();
+//         display();
+    } else if(key=='d'|| key=='D'){
+        if (dx_ob < 41.49)
+            dx_ob += 0.1;
+        glutPostRedisplay();
+    } else if(key=='a'|| key=='A'){
+        if (dx_ob > 0.1)
+            dx_ob -= 0.1;
+        glutPostRedisplay();
+    } else if(key=='w'|| key=='W'){
+        if (dy_ob < 7.49)
+            dy_ob += 0.1;
+        glutPostRedisplay();
+    } else if(key=='s'|| key=='S'){
+        if (dy_ob > 0.1)
+            dy_ob -= 0.1;
+        glutPostRedisplay();
+    } else if(key=='r'|| key=='R'){
         kotak=2;
 
         turn=1; menang=false;
@@ -461,11 +459,7 @@ void input(unsigned char key, int x, int y){
                 dy1=1*kotak;
             }
             turn=2;
-            //Player 2
-
-------------------------------------------------------------------------
-
-----
+            //Player 2----------------------------------------------------------------------------
         }else if(turn==2){
             for (int i=0; i<dadu; i++){
                 if (dy2%4 == 0){
@@ -533,20 +527,25 @@ void input(unsigned char key, int x, int y){
 void myinit(){
  glMatrixMode(GL_PROJECTION);
  glLoadIdentity();
- glOrtho(1.75,44.25,-0.25,8.25, 50, -50);
+ glOrtho(-0.25,42.25,-0.25,8.25, -50, 50);
 // glOrtho(0,20,0,10, -50, 50);
  glMatrixMode(GL_MODELVIEW);
  glClearColor(0.5,0.5,0.5,1.0);
- glColor3f(0.0,0.0,1.0);
+ glColor4f(0.0,0.0,1.0, 1.0);
+
  glShadeModel(GL_FLAT);
- glEnable(GL_DEPTH);
+ glEnable(GL_DEPTH_TEST);
+
+ glEnable(GL_BLEND);
+ glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
  srand(time(NULL));
  cout<<"Tekan [Spasi] untuk bermain"<<endl;
 }
 
 int main(int argc, char* argv[]){
  glutInit(&argc,argv);
- glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
+ glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH );
  glutInitWindowSize(1000,200);
  //glutInitWindowPosition(100,100);
  glutCreateWindow("Segitiga Warna");

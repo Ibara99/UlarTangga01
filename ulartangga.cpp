@@ -1,4 +1,4 @@
-//v 1.1
+// v.1.2
 
 #include <windows.h>
 #ifdef __APPLE__
@@ -28,7 +28,7 @@ void box(float x1, float y1, float z1, float x2, float y2, float z2){
     //kiri bawah belakang ----- kanan atas depan
     glBegin(GL_QUADS);
         //belakang
-        glColor3f(1,0,0);
+//        glColor3f(1,0,0);
         glVertex3f(x1, y1, z1);
         glVertex3f(x2, y1, z1);
         glVertex3f(x2, y2, z1);
@@ -68,6 +68,65 @@ void box(float x1, float y1, float z1, float x2, float y2, float z2){
         glVertex3f(x2,y1,z2);
         glVertex3f(x2,y2,z2);
         glVertex3f(x2,y2,z1);
+    glEnd();
+}
+void box24(float x1, float y1, float z1, float x2, float y2, float z2,
+           float x3, float y3, float z3, float x4, float y4, float z4,
+           float x5, float y5, float z5, float x6, float y6, float z6,
+           float x7, float y7, float z7, float x8, float y8, float z8 ){
+    /*
+        x1 = pojok kiri bawah depan
+        x2 = pojok kanan bawah depan
+        x3 = pojok kanan atas depan
+        x4 = pojok kiri atas depan
+        x5 = pojok kiri bawah belakang
+        x6 = pojok kanan bawah belakang
+        x7 = pojok kanan atas belakang
+        x8 = pojok kiri atas belakang
+    */
+    //kiri bawah belakang ----- kanan atas depan
+    glBegin(GL_QUADS);
+        //belakang
+//        glColor3f(1,0,0);
+        glVertex3f(x5, y5, z5);
+        glVertex3f(x8, y8, z8);
+        glVertex3f(x7, y7, z7);
+        glVertex3f(x6, y6, z6);
+
+        //depan
+//        glColor3f(1,1,0);
+        glVertex3f(x1, y1, z1);
+        glVertex3f(x2, y2, z2);
+        glVertex3f(x3, y3, z3);
+        glVertex3f(x4, y4, z4);
+
+        //bottom
+//        glColor3f(1,0,1);
+        glVertex3f(x1,y1,z1);
+        glVertex3f(x5,y5,z5);
+        glVertex3f(x6,y6,z6);
+        glVertex3f(x2,y2,z2);
+
+        //top
+//        glColor3f(0,1,0);
+        glVertex3f(x4,y4,z4);
+        glVertex3f(x3,y3,z3);
+        glVertex3f(x7,y7,z7);
+        glVertex3f(x8,y8,z8);
+
+        //left
+//        glColor3f(0,1,1);
+        glVertex3f(x1,y1,z1);
+        glVertex3f(x4,y4,z4);
+        glVertex3f(x8,y8,z8);
+        glVertex3f(x5,y5,z5);
+
+        //right
+//        glColor3f(1,1,1);
+        glVertex3f(x3,y3,z3);
+        glVertex3f(x2,y2,z2);
+        glVertex3f(x6,y6,z6);
+        glVertex3f(x7,y7,z7);
     glEnd();
 }
 
@@ -133,9 +192,9 @@ void tangga(float x1, float y1, float x2, float y2){
  glColor3f(0.84, 0.46, 0.04);
  if (y1==y2){
      for (float x=x1; x<x2-1; x+=1){
-         glRectf(x,     y1-0.6, x+2,   y1-0.4);
-         glRectf(x,     y1+0.6, x+2,   y1+0.4);
-         glRectf(x+0.9, y1-0.6, x+1.1, y1+0.6);
+         box(x,     y1-0.6,0, x+2,   y1-0.4,0.5);
+         box(x,     y1+0.6,0, x+2,   y1+0.4,0.5);
+         box(x+0.9, y1-0.6,0, x+1.1, y1+0.6,0.5);
      }
  } else{
     float derajat;
@@ -146,48 +205,75 @@ void tangga(float x1, float y1, float x2, float y2){
     }else{
         derajat=-0.25;
     }
-    glBegin(GL_QUADS); //L
-        glVertex2f(x1-0.6, y1+derajat);
-        glVertex2f(x1-0.4, y1+derajat);
-        glVertex2f(x2-0.4, y2+derajat);
-        glVertex2f(x2-0.6, y2+derajat);
-        //R
-        glVertex2f(x1+0.6, y1-derajat);
-        glVertex2f(x1+0.4, y1-derajat);
-        glVertex2f(x2+0.4, y2-derajat);
-        glVertex2f(x2+0.6, y2-derajat);
-     glEnd();
-     for (float i=0.5; i<5; i+=0.5){
-        glBegin(GL_QUADS);
-            glVertex2f(x1+((x2-x1)*i/5)-0.4,  y1+((y2-y1)*i/5)+0.1 +derajat); //kanan atas
-            glVertex2f(x1+((x2-x1)*i/5)-0.55, y1+((y2-y1)*i/5)-0.1 +derajat); //kanan bwh
-            glVertex2f(x1+((x2-x1)*i/5)+0.4,  y1+((y2-y1)*i/5)-0.1 -derajat);
-            glVertex2f(x1+((x2-x1)*i/5)+0.55, y1+((y2-y1)*i/5)+0.1 -derajat);
-        glEnd();
-     }
+
+    for (float i=0.5; i<5; i+=0.5){
+        box24(x1+((x2-x1)*i/5)-0.4,  y1+((y2-y1)*i/5)+0.1 +derajat, 0,   
+
+       x1+((x2-x1)*i/5)-0.55, y1+((y2-y1)*i/5)-0.1 +derajat, 0,
+              x1+((x2-x1)*i/5)+0.4,  y1+((y2-y1)*i/5)-0.1 -derajat, 0,   
+
+       x1+((x2-x1)*i/5)+0.55, y1+((y2-y1)*i/5)+0.1 -derajat, 0,
+              x1+((x2-x1)*i/5)-0.4,  y1+((y2-y1)*i/5)+0.1 +derajat, 1,   
+
+       x1+((x2-x1)*i/5)-0.55, y1+((y2-y1)*i/5)-0.1 +derajat, 1,
+              x1+((x2-x1)*i/5)+0.4,  y1+((y2-y1)*i/5)-0.1 -derajat, 1,   
+
+       x1+((x2-x1)*i/5)+0.55, y1+((y2-y1)*i/5)+0.1 -derajat, 1);
+    }
+
+    box24(x1-0.6, y1+derajat, 1,    x1-0.4, y1+derajat, 1,
+          x2-0.4, y2+derajat, 1,    x2-0.6, y2+derajat, 1,
+          x1-0.6, y1+derajat, 0,    x1-0.4, y1+derajat, 0,
+          x2-0.4, y2+derajat, 0,    x2-0.6, y2+derajat, 0);
+
+    box24(x1+0.4, y1-derajat, 1,    x1+0.6, y1-derajat, 1,
+          x2+0.6, y2-derajat, 1,    x2+0.4, y2-derajat, 1,
+          x1+0.4, y1-derajat, 0,    x1+0.6, y1-derajat, 0,
+          x2+0.6, y2-derajat, 0,    x2+0.4, y2-derajat, 0);
+
  }
 }
 
 void ular(float x1, float y1, float x2, float y2){
-    glBegin(GL_QUADS);
-        glColor3f(0.49, 0.49, 0.67);
-        glVertex2f(x1-0.25, y1+ 0*(y2-y1)/3);
-        glVertex2f(x1+0.25, y1+ 0*(y2-y1)/3);
-        glVertex2f(x1+ (x2-x1)/2+0.25, y1+ 1*(y2-y1)/3);
-        glVertex2f(x1+ (x2-x1)/2-0.25, y1+ 1*(y2-y1)/3);
+    glColor3f(0.49, 0.49, 0.67);
+    box24(x1-0.25, y1+ 0*(y2-y1)/3, 1,                  x1+0.25, y1+ 0*
 
-        glColor3f(0.35, 0.25,0.29);
-        glVertex2f(x1+ (x2-x1)/2+0.25, y1+ 1*(y2-y1)/3);
-        glVertex2f(x1+ (x2-x1)/2-0.25, y1+ 1*(y2-y1)/3);
-        glVertex2f(x1+ (x2-x1)/2-0.25, y1+ 2*(y2-y1)/3);
-        glVertex2f(x1+ (x2-x1)/2+0.25, y1+ 2*(y2-y1)/3);
+(y2-y1)/3, 1,
+              x1+ (x2-x1)/2+0.25, y1+ 1*(y2-y1)/3, 1,   x1+ (x2-x1)/2-
 
-        glColor3f(0.49, 0.49, 0.67);
-        glVertex2f(x1+ (x2-x1)/2-0.25, y1+ 2*(y2-y1)/3);
-        glVertex2f(x1+ (x2-x1)/2+0.25, y1+ 2*(y2-y1)/3);
-        glVertex2f(x2+0.25, y1+ 3*(y2-y1)/3);
-        glVertex2f(x2-0.25, y1+ 3*(y2-y1)/3);
-    glEnd();
+0.25, y1+ 1*(y2-y1)/3, 1,
+              x1-0.25, y1+ 0*(y2-y1)/3, 0,              x1+0.25, y1+ 0*
+
+(y2-y1)/3, 0,
+              x1+ (x2-x1)/2+0.25, y1+ 1*(y2-y1)/3, 0,   x1+ (x2-x1)/2-
+
+0.25, y1+ 1*(y2-y1)/3, 0);
+    glColor3f(0.35, 0.25,0.29);
+    box24(x1+ (x2-x1)/2+0.25, y1+ 1*(y2-y1)/3,1,        x1+ (x2-x1)/2-
+
+0.25, y1+ 1*(y2-y1)/3,1,
+          x1+ (x2-x1)/2-0.25, y1+ 2*(y2-y1)/3,1,        x1+ (x2-
+
+x1)/2+0.25, y1+ 2*(y2-y1)/3,1,
+          x1+ (x2-x1)/2+0.25, y1+ 1*(y2-y1)/3,0,        x1+ (x2-x1)/2-
+
+0.25, y1+ 1*(y2-y1)/3,0,
+          x1+ (x2-x1)/2-0.25, y1+ 2*(y2-y1)/3,0,        x1+ (x2-
+
+x1)/2+0.25, y1+ 2*(y2-y1)/3,0);
+    glColor3f(0.49, 0.49, 0.67);
+    box24(x1+ (x2-x1)/2-0.25, y1+ 2*(y2-y1)/3,1,        x1+ (x2-
+
+x1)/2+0.25, y1+ 2*(y2-y1)/3,1,
+          x2+0.25, y1+ 3*(y2-y1)/3,1,                   x2-0.25, y1+ 3*
+
+(y2-y1)/3,1,
+          x1+ (x2-x1)/2-0.25, y1+ 2*(y2-y1)/3,0,        x1+ (x2-
+
+x1)/2+0.25, y1+ 2*(y2-y1)/3,0,
+          x2+0.25, y1+ 3*(y2-y1)/3,0,                   x2-0.25, y1+ 3*
+
+(y2-y1)/3,0);
 }
 
 void papan(){
@@ -207,10 +293,11 @@ void papan(){
             glColor3f(0.2, 0.4, 0.6);
          }
          glBegin(GL_POLYGON);
-             glVertex2f(x*kotak,    y*kotak);
-             glVertex2f(x*kotak+2,  y*kotak);
-             glVertex2f(x*kotak+2,  y*kotak+2);
-             glVertex2f(x*kotak,    y*kotak+2);
+            box(x*kotak, y*kotak, -0.2, x*kotak+2, y*kotak+2, -0.1);
+//             glVertex2f(x*kotak,    y*kotak);
+//             glVertex2f(x*kotak+2,  y*kotak);
+//             glVertex2f(x*kotak+2,  y*kotak+2);
+//             glVertex2f(x*kotak,    y*kotak+2);
          glEnd();
      }for (int x=1; x<=21; x++){
          if (y%2==ganjil ){
@@ -231,29 +318,32 @@ void papan(){
 
 void pemain1(){
     glColor3f(1, 0.5, 0.5);
-    glBegin(GL_QUADS);
-        glVertex2f(2.75+dx1,1.15+dy1);
-        glVertex2f(3.25+dx1,1.15+dy1);
-        glVertex2f(3.25+dx1,1.5+dy1);
-        glVertex2f(2.75+dx1,1.5+dy1);
-    glEnd();
+    box24(2.75+dx1,1.15+dy1,1,           3.25+dx1,1.15+dy1,1,
+            3.25+dx1,1.5+dy1,1,            2.75+dx1,1.5+dy1,1,
+            2.75+dx1,1.15+dy1,0,           3.25+dx1,1.15+dy1,0,
+            3.25+dx1,1.5+dy1,0,            2.75+dx1,1.5+dy1,0);
+
 }
 
 void pemain2(){
     glColor3f(1,1,1);
-    glBegin(GL_QUADS);
-        glVertex2f(2.75+dx2,0.5+dy2);
-        glVertex2f(3.00+dx2,0.5+dy2);
-        glVertex2f(3.25+dx2,1.00+dy2);
-        glVertex2f(2.75+dx2,1.00+dy2);
-    glEnd();
+    box24(2.75+dx2,0.5+dy2,1,        3.00+dx2,0.5+dy2,1,
+          3.25+dx2,1.00+dy2,1,       2.75+dx2,1.00+dy2,1,
+          2.75+dx2,0.5+dy2,0,        3.00+dx2,0.5+dy2,0,
+          3.25+dx2,1.00+dy2,0,       2.75+dx2,1.00+dy2,0);
+
 }
 
 void display(){
  glClear(GL_COLOR_BUFFER_BIT| GL_DEPTH_BUFFER_BIT);
- glTranslated(21.25, 4.25,0);
- glRotated(45, 1,1,1);
- glTranslated(-21.25, -4.25,0);
+// glTranslated(21.25, 4.25,0);
+// glRotated(45, 1,1,1);
+// glTranslated(-21.25, -4.25,0);
+
+// box24(5-0.6, 0+0.25, 1,        5-0.4, 0+0.25,1,
+//       11-0.4, 7+0.25,1,        11-0.6, 7+0.25,1,
+//       5-0.6, 0+0.25, 0,        5-0.4, 0+0.25,0,
+//       11-0.4, 7+0.25,0,        11-0.6, 7+0.25,0);
 
  papan();
  ular(4*kotak+1,    1*kotak+1, 2*kotak+1,   3*kotak+1);
@@ -269,14 +359,34 @@ void display(){
 
  pemain1();
  pemain2();
-
- glFlush();
+ glutSwapBuffers();
+// glFlush();
 }
 
 void input(unsigned char key, int x, int y){
     if (key=='q' || key=='Q') {
         exit(0);
-    } else if(key=='r'|| key=='R'){
+    } else if(key=='a' || key=='A'){
+         glTranslated(23, 4.25,0);
+         glRotated(1, 0,1,0);
+         glTranslated(-23, -4.25,0);
+         display();
+    } else if(key=='d' || key=='D'){
+         glTranslated(23, 4.25,0);
+         glRotated(-1, 0,1,0);
+         glTranslated(-23, -4.25,0);
+         display();
+    } else if(key=='w' ){
+         glTranslated(23, 4.0,0);
+         glRotated(1, 1,0,0);
+         glTranslated(-23, -4.0,0);
+         display();
+    } else if(key=='s' ){
+         glTranslated(21.25, 4.0,0);
+         glRotated(-1, 1,0,0);
+         glTranslated(-21.25, -4.0,0);
+         display();
+    }else if(key=='r'|| key=='R'){
         kotak=2;
 
         turn=1; menang=false;
@@ -351,7 +461,11 @@ void input(unsigned char key, int x, int y){
                 dy1=1*kotak;
             }
             turn=2;
-            //Player 2----------------------------------------------------------------------------
+            //Player 2
+
+------------------------------------------------------------------------
+
+----
         }else if(turn==2){
             for (int i=0; i<dadu; i++){
                 if (dy2%4 == 0){
@@ -419,25 +533,27 @@ void input(unsigned char key, int x, int y){
 void myinit(){
  glMatrixMode(GL_PROJECTION);
  glLoadIdentity();
- glOrtho(1.75,44.25,-0.25,8.25, 10, -10);
+ glOrtho(1.75,44.25,-0.25,8.25, 50, -50);
+// glOrtho(0,20,0,10, -50, 50);
  glMatrixMode(GL_MODELVIEW);
  glClearColor(0.5,0.5,0.5,1.0);
  glColor3f(0.0,0.0,1.0);
- glEnable(GL_DEPTH);
  glShadeModel(GL_FLAT);
+ glEnable(GL_DEPTH);
  srand(time(NULL));
  cout<<"Tekan [Spasi] untuk bermain"<<endl;
 }
 
 int main(int argc, char* argv[]){
  glutInit(&argc,argv);
- glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH);
+ glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
  glutInitWindowSize(1000,200);
  //glutInitWindowPosition(100,100);
  glutCreateWindow("Segitiga Warna");
+ myinit();
  glutKeyboardFunc(input);
  glutDisplayFunc(display);
- myinit();
+
  glutMainLoop();
  return 0;
 }

@@ -1,4 +1,4 @@
-// v.1.3
+// v.1.3.1
 #include <windows.h>
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -341,6 +341,42 @@ void display(){
  glFlush();
 }
 
+int* cek(int dx, int dy){
+    //Cek kotak ular or tangga
+    //Kotak x_gambar-1
+    if (dx==1*kotak && dy==0*kotak){
+        dx=4*kotak;
+        dy=3*kotak;
+    } else if (dx==8*kotak && dy==1*kotak){
+        dx=4*kotak;
+        dy=1*kotak;
+    } else if (dx==15*kotak && dy==0*kotak){
+        dx=15*kotak;
+        dy=3*kotak;
+    } else if (dx==9*kotak && dy==2*kotak){
+        dx=14*kotak;
+        dy=2*kotak;
+    } else if (dx==20*kotak && dy==0*kotak){
+        dx=17*kotak;
+        dy=3*kotak;
+    }
+    //Ini ular
+    else if (dx==1*kotak && dy==3*kotak){
+        dx=3*kotak;
+        dy=1*kotak;
+    } else if (dx==14*kotak && dy==3*kotak){
+        dx=9*kotak;
+        dy=0*kotak;
+    } else if (dx==16*kotak && dy==2*kotak){
+        dx=18*kotak;
+        dy=0*kotak;
+    } else if (dx==5*kotak && dy==3*kotak){
+        dx=9*kotak;
+        dy=1*kotak;
+    }
+    int d[] = {dx, dy};
+    return d;
+}
 void input(unsigned char key, int x, int y){
     if (key=='q' || key=='Q') {
         exit(0);
@@ -402,6 +438,7 @@ void input(unsigned char key, int x, int y){
         int dadu = rand() % 6 +1;
         cout << "Giliran Pemain "<<turn<<endl;
         cout << "Angka Hasil Dadu: "<<dadu << endl;
+        int * d;
         if (turn==1){
             for (int i=0; i<dadu; i++){
                 if (dy1%4 == 0){
@@ -426,38 +463,8 @@ void input(unsigned char key, int x, int y){
                 display();
                 Sleep(100);
             }
-            //Cek kotak ular or tangga
-            //Kotak x_gambar-1
-            if (dx1==1*kotak && dy1==0*kotak){
-                dx1=4*kotak;
-                dy1=3*kotak;
-            } else if (dx1==8*kotak && dy1==1*kotak){
-                dx1=4*kotak;
-                dy1=1*kotak;
-            } else if (dx1==15*kotak && dy1==0*kotak){
-                dx1=15*kotak;
-                dy1=3*kotak;
-            } else if (dx1==9*kotak && dy1==2*kotak){
-                dx1=14*kotak;
-                dy1=2*kotak;
-            } else if (dx1==20*kotak && dy1==0*kotak){
-                dx1=17*kotak;
-                dy1=3*kotak;
-            }
-            //Ini ular
-            else if (dx1==1*kotak && dy1==3*kotak){
-                dx1=3*kotak;
-                dy1=1*kotak;
-            } else if (dx1==14*kotak && dy1==3*kotak){
-                dx1=9*kotak;
-                dy1=0*kotak;
-            } else if (dx1==16*kotak && dy1==2*kotak){
-                dx1=18*kotak;
-                dy1=0*kotak;
-            } else if (dx1==5*kotak && dy1==3*kotak){
-                dx1=9*kotak;
-                dy1=1*kotak;
-            }
+            d = cek(dx1, dy1);
+            dx1= d[0]; dy1=d[1];
             turn=2;
             //Player 2----------------------------------------------------------------------------
         }else if(turn==2){
@@ -485,38 +492,8 @@ void input(unsigned char key, int x, int y){
                 display();
                 Sleep(100);
             }
-            //cek ular tangga
-            //Kotak gambar-1
-            if (dx2==1*kotak && dy2==0*kotak){
-                dx2=4*kotak;
-                dy2=3*kotak;
-            } else if (dx2==8*kotak && dy2==1*kotak){
-                dx2=4*kotak;
-                dy2=1*kotak;
-            } else if (dx2==15*kotak && dy2==0*kotak){
-                dx2=15*kotak;
-                dy2=3*kotak;
-            } else if (dx2==9*kotak && dy2==2*kotak){
-                dx2=14*kotak;
-                dy2=2*kotak;
-            } else if (dx2==20*kotak && dy2==0*kotak){
-                dx2=17*kotak;
-                dy2=3*kotak;
-            }
-            //Ini ular
-            else if (dx2==1*kotak && dy2==3*kotak){
-                dx2=3*kotak;
-                dy2=1*kotak;
-            } else if (dx2==14*kotak && dy2==3*kotak){
-                dx2=9*kotak;
-                dy2=0*kotak;
-            } else if (dx2==16*kotak && dy2==2*kotak){
-                dx2=18*kotak;
-                dy2=0*kotak;
-            } else if (dx2==5*kotak && dy2==3*kotak){
-                dx2=9*kotak;
-                dy2=1*kotak;
-            }
+            d = cek(dx2, dy2);
+            dx2 = d[0]; dy2=d[1];
             turn=1;
         }
         display();

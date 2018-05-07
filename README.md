@@ -37,3 +37,6 @@ v.1.3
       
       - Mengubah input tombol rotate, menambah input gerak observer
       
+v.1.3.1
+
+      - Menambah fungsi pengecekan kotak ular atau tangga.

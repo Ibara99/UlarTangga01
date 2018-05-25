@@ -40,3 +40,13 @@ v.1.3
 v.1.3.1
 
       - Menambah fungsi pengecekan kotak ular atau tangga.
+
+v.1.4 (waktu demo_3)
+
+      - Mengubah bentuk player dan observer => topi, icosahedron, kamera
+      
+      - Kekurangan :
+            + rotate harusnya terhadap X dan Y
+            + Tangga mestinya pake rotate :")
+            + Ular dan tangga tidak mengikuti aturan tangan kanan, akan mempengaruhi cahaya. Untuk demo 4 akan mengurangi nilai. 
+            Clue: gunakan IF (entah untuk apa) :")

@@ -563,6 +563,7 @@ void input(unsigned char key, int x, int y){
             }
             d = cek(dx1, dy1);
             dx1= d[0]; dy1=d[1];
+
             turn=2;
             //Player 2----------------------------------------------------------------------------
         }else if(turn==2){

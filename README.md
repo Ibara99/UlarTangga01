@@ -50,3 +50,10 @@ v.1.4 (waktu demo_3)
             + Tangga mestinya pake rotate :")
             + Ular dan tangga tidak mengikuti aturan tangan kanan, akan mempengaruhi cahaya. Untuk demo 4 akan mengurangi nilai. 
             Clue: gunakan IF (entah untuk apa) :")
+
+v.2.1 
+
+      - Mengubah rotate menajdi terhadap X Y 
+      - Menambah vektor normal
+      - Menambah view glperspektif (masih sangat perlu diperbaiki)
+      - Ada yang salah dengan rotate NRP

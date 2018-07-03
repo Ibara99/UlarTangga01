@@ -1,4 +1,4 @@
-// v.1.4
+// v.2.1
 #include <windows.h>
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -14,7 +14,7 @@
 
 using namespace std;
 
-int mode=1;
+int mode=3;
 bool menang=false;
 int ganjil=1;   int genap=0;
 int kotak=2;
@@ -25,30 +25,95 @@ float dx_ob = 0.0;float dy_ob = 1;
 string arah_observer = "atas";
 float spin[] = {0,0,0};
 float spin_save[] = {-25,0,0};
+float pos[3] = {0,4.2,0};
+float viewdir[3] = {1, 0, 0};
+double alpha = 0;
 
+void mungkin_berguna (){
+    cout<<1.57<<"--"<< sin(1.57)<<endl;
+    for (float i=0; i<=1; i+=0.01){
+        cout << i<<"<---hasil_sin||radian--->"<< asin(i) << endl;
+    }
+    /*btw yang dipake di sin/hasil asin itu dalam radian.
+     radian || derajat || hasil sin
+    if 6.28 == 360      == 0 (kelipatan 180)
+    if 3.14 == 180      == 0 (per 180 nilainya sama seperti 0)
+    if 1.57 ==  90      == 1
+    if 0.785 == 45      == 0.5 * sqrt(2)
+    if 0.523 == 30      == 0.5 * sqrt(1)
+    if 0    ==   0      == 0
+
+    masalahnya, dalam perbandingan sin cos tan, kita butuh derajat, yang nanti akan diubah lagi ke radian.
+    cara ngubah derajat ke radian? cek this:
+    misal x=0; asin(1) == 1.57
+    */
+    cout << (asin(1)/6.28)*360 <<endl;
+    //atau untuk ngubah dari derajat ke radian. misal derajat == 90;
+    float derajat = 90;
+    cout << (derajat/360) *6.28;
+
+    //teori sama sin bisa diterapkan untuk cos dan tan,
+    //dengan penyesuaian perbandingan di atas--yang beda hanya hasil_(sin|cos|tan)
+}
+
+float * vektor_normal (float x1,float y1,float z1,
+                       float x2,float y2,float z2,
+                       float x4,float y4,float z4){
+    /*
+    x1-z1 == pusat
+    x2-z2 == arah v1
+    x4-z4 == arah v2
+    */
+
+    float v1[] = {(x2-x1), (y2-y1), (z2-z1)};
+    float v2[] = {(x4-x1), (y4-y1), (z4-z1)};
+//    cout<<"v1-"<<v1[0]<<'-'<<v1[1]<<'-'<<v1[2]<<'-'<<endl;
+//    cout<<"v2-"<<v2[0]<<'-'<<v2[1]<<'-'<<v2[2]<<'-'<<endl;
+    float vx = v1[1]*v2[2] - v1[2]*v2[1];
+    float vy = v1[2]*v2[0] - v1[0]*v2[2];
+    float vz = v1[0]*v2[1] - v1[1]*v2[0];
+
+    float v_normal[3] = {vx, vy, vz};
+    return v_normal;
+}
 void limas_segitiga (float p_alas, float tinggi){
 //    glColor3f(0,1,0);
     GLfloat a = p_alas/2;
-
+    float* vn = vektor_normal(-a,0,a,
+                               0,0,-a,
+                               a,0,a);
     glBegin(GL_POLYGON);
+        glNormal3f(vn[0], vn[1], vn[2]);
         glVertex3f(-a, 0,  a);
         glVertex3f( 0, 0, -a);
         glVertex3f( a, 0,  a);
     glEnd();
 //    glColor3f(0,1,1);
+    vn = vektor_normal(-a,0,a,
+                         a,0,a,
+                         0, tinggi,0);
     glBegin(GL_POLYGON);
+        glNormal3f(vn[0], vn[1], vn[2]);
         glVertex3f(-a, 0,  a);
         glVertex3f( a, 0,  a);
         glVertex3f( 0, tinggi,  0);
     glEnd();
 //    glColor3f(1,1,0);
+    vn = vektor_normal(-0,0,-a,
+                         -a,0,a,
+                         0, tinggi,0);
     glBegin(GL_POLYGON);
+        glNormal3f(vn[0], vn[1], vn[2]);
         glVertex3f( 0, 0, -a);
         glVertex3f(-a, 0,  a);
         glVertex3f( 0, tinggi,  0);
     glEnd();
 //    glColor3f(1,1,1);
+    vn = vektor_normal(a,0,a,
+                         0,0,-a,
+                         0, tinggi,0);
     glBegin(GL_POLYGON);
+        glNormal3f(vn[0], vn[1], vn[2]);
         glVertex3f( a, 0,  a);
         glVertex3f( 0, 0, -a);
         glVertex3f( 0, tinggi,  0);
@@ -57,20 +122,27 @@ void limas_segitiga (float p_alas, float tinggi){
 void tabung(float dx, float dy, float dz,
             float jari1, float jari2, float tinggi){
      glBegin(GL_POLYGON);
+     glNormal3f(0,dy,0);
      for (float i=0;i<6.28; i+=0.01){
         glVertex3f(cos(i)*jari1+dx, 0+dy, sin(i)*jari2+dz);
      }
      glEnd();
 
      glBegin(GL_POLYGON);
+     glNormal3f(0,tinggi+dy,0);
      for (float i=0;i<6.28; i+=0.01){
         glVertex3f(cos(i)*jari1+dx, tinggi+dy, sin(i)*jari2+dz);
      }
      glEnd();
 
+     float* vn;
      for (float i=0;i<6.28; i+=0.01){
 //        glColor3f(i*0.1,i*0.1,i*0.1);
+        vn = vektor_normal(cos(i)*jari1+dx, 0+dy, sin(i)*jari2+dz,
+                           cos(i)*jari1+dx, tinggi+dy, sin(i)*jari2+dz,
+                           cos(i-0.01)*jari1+dx, 0+dy, sin(i-0.01)*jari2+dz);
         glBegin(GL_POLYGON);
+        glNormal3f(0,dy,0);
         glVertex3f(cos(i)*jari1+dx, 0+dy, sin(i)*jari2+dz);
         glVertex3f(cos(i)*jari1+dx, tinggi+dy, sin(i)*jari2+dz);
         glVertex3f(cos(i-0.01)*jari1+dx, tinggi+dy, sin(i-0.01)*jari2+dz);
@@ -81,44 +153,55 @@ void tabung(float dx, float dy, float dz,
 
 void box(float x1, float y1, float z1, float x2, float y2, float z2){
     //kiri bawah belakang ----- kanan atas depan
-    glBegin(GL_QUADS);
+    glBegin(GL_POLYGON);
         //belakang
 //        glColor3f(1,0,0);
+        glNormal3f(0,0,z1);
         glVertex3f(x1, y1, z1);
         glVertex3f(x2, y1, z1);
         glVertex3f(x2, y2, z1);
         glVertex3f(x1, y2, z1);
-
+    glEnd();
+    glBegin(GL_POLYGON);
         //depan
 //        glColor3f(1,1,0);
+        glNormal3f(0,0,z2);
         glVertex3f(x1, y1, z2);
         glVertex3f(x1, y2, z2);
         glVertex3f(x2, y2, z2);
         glVertex3f(x2, y1, z2);
-
+    glEnd();
+    glBegin(GL_POLYGON);
         //bottom
 //        glColor3f(1,0,1);
+        glNormal3f(0,y1,0);
         glVertex3f(x1,y1,z1);
         glVertex3f(x2,y1,z1);
         glVertex3f(x2,y1,z2);
         glVertex3f(x1,y1,z2);
-
+    glEnd();
+    glBegin(GL_POLYGON);
         //top
 //        glColor3f(0,1,0);
+        glNormal3f(0,y2,0);
         glVertex3f(x1,y2,z1);
         glVertex3f(x1,y2,z2);
         glVertex3f(x2,y2,z2);
         glVertex3f(x2,y2,z1);
-
+    glEnd();
+    glBegin(GL_POLYGON);
         //left
 //        glColor3f(0,1,1);
+        glNormal3f(x1,0,0);
         glVertex3f(x1,y1,z1);
         glVertex3f(x1,y1,z2);
         glVertex3f(x1,y2,z2);
         glVertex3f(x1,y2,z1);
-
+    glEnd();
+    glBegin(GL_POLYGON);
         //right
 //        glColor3f(1,1,1);
+        glNormal3f(x2,0,0);
         glVertex3f(x2,y1,z1);
         glVertex3f(x2,y1,z2);
         glVertex3f(x2,y2,z2);
@@ -140,46 +223,73 @@ void box24(float x1, float y1, float z1, float x2, float y2, float z2,
         x7 = pojok kanan atas belakang
         x8 = pojok kiri atas belakang
     */
-    //kiri bawah belakang ----- kanan atas depan
-    glBegin(GL_QUADS);
-
-        //belakang
-//        glColor3f(1,0,0);
-        glVertex3f(x5, y5, z5);
-        glVertex3f(x8, y8, z8);
-        glVertex3f(x7, y7, z7);
-        glVertex3f(x6, y6, z6);
-
+    float* vn = vektor_normal(x1,y1,z1,
+                               x2,y2,z2,
+                               x4,y4,z4);
+    glBegin(GL_POLYGON);
         //depan
 //        glColor3f(1,1,0);
+        glNormal3f(vn[0], vn[1], vn[2]);
         glVertex3f(x1, y1, z1);
         glVertex3f(x2, y2, z2);
         glVertex3f(x3, y3, z3);
         glVertex3f(x4, y4, z4);
-
+    glEnd();
+    vn = vektor_normal(x5,y5,z5,
+                       x8,y8,z8,
+                       x6,y6,z6);
+    glBegin(GL_POLYGON);
+        //belakang
+//        glColor3f(1,0,0);
+        glNormal3f(vn[0], vn[1], vn[2]);
+        glVertex3f(x5, y5, z5);
+        glVertex3f(x8, y8, z8);
+        glVertex3f(x7, y7, z7);
+        glVertex3f(x6, y6, z6);
+    glEnd();
+    vn = vektor_normal(x1,y1,z1,
+                       x5,y5,z5,
+                       x2,y2,z2);
+    glBegin(GL_POLYGON);
         //bottom
 //        glColor3f(1,0,1);
+        glNormal3f(vn[0], vn[1], vn[2]);
         glVertex3f(x1,y1,z1);
         glVertex3f(x5,y5,z5);
         glVertex3f(x6,y6,z6);
         glVertex3f(x2,y2,z2);
-
+    glEnd();
+    vn = vektor_normal(x4,y4,z4,
+                       x3,y3,z3,
+                       x8,y8,z8);
+    glBegin(GL_POLYGON);
         //top
 //        glColor3f(0,1,0);
+        glNormal3f(vn[0], vn[1], vn[2]);
         glVertex3f(x4,y4,z4);
         glVertex3f(x3,y3,z3);
         glVertex3f(x7,y7,z7);
         glVertex3f(x8,y8,z8);
-
+    glEnd();
+    vn = vektor_normal(x1,y1,z1,
+                       x4,y4,z4,
+                       x5,y5,z5);
+    glBegin(GL_POLYGON);
         //left
 //        glColor3f(0,1,1);
+        glNormal3f(vn[0], vn[1], vn[2]);
         glVertex3f(x1,y1,z1);
         glVertex3f(x4,y4,z4);
         glVertex3f(x8,y8,z8);
         glVertex3f(x5,y5,z5);
-
+    glEnd();
+    vn = vektor_normal(x3,y3,z3,
+                       x2,y2,z2,
+                       x7,y7,z7);
+    glBegin(GL_POLYGON);
         //right
 //        glColor3f(1,1,1);
+        glNormal3f(vn[0], vn[1], vn[2]);
         glVertex3f(x3,y3,z3);
         glVertex3f(x2,y2,z2);
         glVertex3f(x6,y6,z6);
@@ -264,10 +374,10 @@ void tangga(float x1, float y1, float x2, float y2){
     }
 
     for (float i=0.5; i<5; i+=0.5){
-        box24(x1+((x2-x1)*i/5)-0.4,  y1+((y2-y1)*i/5)+0.1 +derajat, 0.6,          x1+((x2-x1)*i/5)-0.55, y1+((y2-y1)*i/5)-0.1 +derajat, 0.6,
-              x1+((x2-x1)*i/5)+0.4,  y1+((y2-y1)*i/5)-0.1 -derajat, 0.6,          x1+((x2-x1)*i/5)+0.55, y1+((y2-y1)*i/5)+0.1 -derajat, 0.6,
-              x1+((x2-x1)*i/5)-0.4,  y1+((y2-y1)*i/5)+0.1 +derajat, 1,          x1+((x2-x1)*i/5)-0.55, y1+((y2-y1)*i/5)-0.1 +derajat, 1,
-              x1+((x2-x1)*i/5)+0.4,  y1+((y2-y1)*i/5)-0.1 -derajat, 1,          x1+((x2-x1)*i/5)+0.55, y1+((y2-y1)*i/5)+0.1 -derajat, 1);
+        box24(x1+((x2-x1)*i/5)-0.4,  y1+((y2-y1)*i/5)+0.1 +derajat, 1,          x1+((x2-x1)*i/5)-0.55, y1+((y2-y1)*i/5)-0.1 +derajat, 1,
+              x1+((x2-x1)*i/5)+0.4,  y1+((y2-y1)*i/5)-0.1 -derajat, 1,          x1+((x2-x1)*i/5)+0.55, y1+((y2-y1)*i/5)+0.1 -derajat, 1,
+              x1+((x2-x1)*i/5)-0.4,  y1+((y2-y1)*i/5)+0.1 +derajat, 0.6,          x1+((x2-x1)*i/5)-0.55, y1+((y2-y1)*i/5)-0.1 +derajat, 0.6,
+              x1+((x2-x1)*i/5)+0.4,  y1+((y2-y1)*i/5)-0.1 -derajat, 0.6,          x1+((x2-x1)*i/5)+0.55, y1+((y2-y1)*i/5)+0.1 -derajat, 0.6);
     }
 
     box24(x1-0.6, y1+derajat, 1,    x1-0.4, y1+derajat, 1,
@@ -285,20 +395,25 @@ void tangga(float x1, float y1, float x2, float y2){
 
 void ular(float x1, float y1, float x2, float y2){
     glColor4f(0.49, 0.49, 0.67, 1.0);
-    box24(x1-0.25, y1+ 0*(y2-y1)/3, 1,                  x1+0.25, y1+ 0*(y2-y1)/3, 1,
-              x1+ (x2-x1)/2+0.25, y1+ 1*(y2-y1)/3, 1,   x1+ (x2-x1)/2-0.25, y1+ 1*(y2-y1)/3, 1,
-              x1-0.25, y1+ 0*(y2-y1)/3, 0.6,              x1+0.25, y1+ 0*(y2-y1)/3, 0.6,
-              x1+ (x2-x1)/2+0.25, y1+ 1*(y2-y1)/3, 0.6,   x1+ (x2-x1)/2-0.25, y1+ 1*(y2-y1)/3, 0.6);
+    /* box24(LDF, RDF,
+             RUF, LUF,
+             LDB, RDB,
+             RUB, LUB}
+             */
+    box24(x1-0.25,            y1+ 0*(y2-y1)/3, 1,       x1+0.25,            y1+ 0*(y2-y1)/3, 1,
+          x1+ (x2-x1)/2+0.25, y1+ 1*(y2-y1)/3, 1,       x1+ (x2-x1)/2-0.25, y1+ 1*(y2-y1)/3, 1,
+          x1-0.25,            y1+ 0*(y2-y1)/3, 0.6,     x1+0.25,            y1+ 0*(y2-y1)/3, 0.6,
+          x1+ (x2-x1)/2+0.25, y1+ 1*(y2-y1)/3, 0.6,     x1+ (x2-x1)/2-0.25, y1+ 1*(y2-y1)/3, 0.6);
     glColor4f(0.35, 0.25,0.29, 1.0);
-    box24(x1+ (x2-x1)/2+0.25, y1+ 1*(y2-y1)/3,1,        x1+ (x2-x1)/2-0.25, y1+ 1*(y2-y1)/3,1,
-          x1+ (x2-x1)/2-0.25, y1+ 2*(y2-y1)/3,1,        x1+ (x2-x1)/2+0.25, y1+ 2*(y2-y1)/3,1,
-          x1+ (x2-x1)/2+0.25, y1+ 1*(y2-y1)/3,0.6,        x1+ (x2-x1)/2-0.25, y1+ 1*(y2-y1)/3,0.6,
-          x1+ (x2-x1)/2-0.25, y1+ 2*(y2-y1)/3,0.6,        x1+ (x2-x1)/2+0.25, y1+ 2*(y2-y1)/3,0.6);
+    box24(x1+ (x2-x1)/2-0.25, y1+ 1*(y2-y1)/3, 1,       x1+ (x2-x1)/2+0.25, y1+ 1*(y2-y1)/3, 1,
+          x1+ (x2-x1)/2+0.25, y1+ 2*(y2-y1)/3, 1,       x1+ (x2-x1)/2-0.25, y1+ 2*(y2-y1)/3, 1,
+          x1+ (x2-x1)/2-0.25, y1+ 1*(y2-y1)/3, 0.6,     x1+ (x2-x1)/2+0.25, y1+ 1*(y2-y1)/3, 0.6,
+          x1+ (x2-x1)/2+0.25, y1+ 2*(y2-y1)/3, 0.6,     x1+ (x2-x1)/2-0.25, y1+ 2*(y2-y1)/3, 0.6);
     glColor4f(0.49, 0.49, 0.67, 1.0);
-    box24(x1+ (x2-x1)/2-0.25, y1+ 2*(y2-y1)/3,1,        x1+ (x2-x1)/2+0.25, y1+ 2*(y2-y1)/3,1,
-          x2+0.25, y1+ 3*(y2-y1)/3,1,                   x2-0.25, y1+ 3*(y2-y1)/3,1,
-          x1+ (x2-x1)/2-0.25, y1+ 2*(y2-y1)/3,0.6,        x1+ (x2-x1)/2+0.25, y1+ 2*(y2-y1)/3,0.6,
-          x2+0.25, y1+ 3*(y2-y1)/3,0.6,                   x2-0.25, y1+ 3*(y2-y1)/3,0.6);
+    box24(x1+ (x2-x1)/2-0.25, y1+ 2*(y2-y1)/3, 1,        x1+ (x2-x1)/2+0.25, y1+ 2*(y2-y1)/3, 1,
+          x2+0.25,            y1+ 3*(y2-y1)/3, 1,        x2-0.25,            y1+ 3*(y2-y1)/3, 1,
+          x1+ (x2-x1)/2-0.25, y1+ 2*(y2-y1)/3, 0.6,      x1+ (x2-x1)/2+0.25, y1+ 2*(y2-y1)/3, 0.6,
+          x2+0.25,            y1+ 3*(y2-y1)/3, 0.6,      x2-0.25,            y1+ 3*(y2-y1)/3, 0.6);
 }
 
 void papan(){
@@ -311,12 +426,27 @@ void papan(){
  int max_kolom=20;
  for (int y=0; y<4; y++){
      for (int x=0; x<21; x++){
+         glPushMatrix();
          if (y%2==ganjil ){
-            angka(max_kolom-x, y,counter);
+            if (mode==3||mode==2){
+//             glTranslated(-x*kotak,0,-y*kotak);
+                glTranslated((max_kolom-x),y,0);
+                glRotated(90, 1,0,0);
+                angka(max_kolom-x, y,counter);
+            }else
+                angka(max_kolom-x, y,counter);
          }else {
-            angka(x,y,counter);
+             if (mode==3||mode==2){
+//             glTranslated(-x*kotak,0,-y*kotak);
+                 glTranslated(x*kotak,y*kotak,0);
+                 glRotated(90, 1,0,0);
+                 angka(0,0,counter);
+    //             glTranslated(x*kotak,0,y*kotak);
+             }else
+                angka(x,y,counter);
          }
          counter++;
+         glPopMatrix();
      }
      //border
      glColor4f(1,0,0, 1.0);
@@ -329,16 +459,16 @@ void papan(){
      for (int x=0; x<21; x++){
          if (x%2==genap && y%2==ganjil ||
              x%2==ganjil && y%2==genap){
-            if (mode==1){
-                glColor3f(0.56, 0.77, 0.77);
-            }else{
+            if (mode==2){
                 glColor4f(0.56, 0.77, 0.77, 0.5);
+            }else{
+                glColor3f(0.56, 0.77, 0.77);
             }
          } else {
-            if (mode==1){
-                glColor3f(0.2, 0.4, 0.6);
-            }else{
+            if (mode==2){
                 glColor4f(0.2, 0.4, 0.6, 0.2);
+            }else{
+                glColor3f(0.2, 0.4, 0.6);
             }
          }
          //petak
@@ -417,9 +547,15 @@ void observer(){
 }
 
 void display(){
+
  glClear(GL_COLOR_BUFFER_BIT| GL_DEPTH_BUFFER_BIT);
  glLoadIdentity();
 
+ if (mode==3){
+     gluLookAt(pos[0],pos[1],pos[2],
+               pos[0]+viewdir[0],   pos[1]+viewdir[1],  pos[2]+viewdir[2],
+               0,1,0);
+ }
  glTranslated(21, 4.0,0);
  glRotated(spin[0], 1,0,0);
  glRotated(spin[1], 0,1,0);
@@ -490,12 +626,25 @@ void input(unsigned char key, int x, int y){
         if (mode==1){
             spin[0]=spin_save[0]; spin[1]=spin_save[1]; spin[2]=spin_save[2];
             mode=2;
-        }else{
+        }else if (mode==2){
             spin_save[0]=spin[0]; spin_save[1]=spin[1]; spin_save[2]=spin[2];
-            spin[0] = 0; spin[1]=0; spin[2]=0;
+            spin[0] = -90; spin[1]=0; spin[2]=0;
+            mode=3;
+        }else{
+            spin[0] = 0;
             mode=1;
         }
+        glMatrixMode(GL_PROJECTION);
+         glLoadIdentity();
+         if (mode==3){
+            gluPerspective(2,1,1,50);
+         }else{
+            glOrtho(-0.25,42.25,-0.25,8.25, -50, 50);
+         }
+         glMatrixMode(GL_MODELVIEW);
+        cout << "mode = " << mode<<endl;
         glutPostRedisplay();
+
     }
 //observer
     else if(key=='d'|| key=='D'){
@@ -563,7 +712,6 @@ void input(unsigned char key, int x, int y){
             }
             d = cek(dx1, dy1);
             dx1= d[0]; dy1=d[1];
-
             turn=2;
             //Player 2----------------------------------------------------------------------------
         }else if(turn==2){
@@ -598,11 +746,17 @@ void input(unsigned char key, int x, int y){
         display();
     }
     else if(mode==2){
-        if(key=='j' || key=='J'){
-             spin[1] += 5;spin[2] += 5;
+        if(key=='u' || key=='U'){
+             spin[2] += 5;
+             glutPostRedisplay();
+        } else if(key=='o' || key=='O'){
+             spin[2] -= 5;
+             glutPostRedisplay();
+        } else if(key=='j' || key=='J'){
+             spin[1] += 5;
              glutPostRedisplay();
         } else if(key=='l' || key=='L'){
-             spin[1] -= 5;spin[2] -= 5;
+             spin[1] -= 5;
              glutPostRedisplay();
         } else if(key=='i' || key=='I' ){
              spin[0] -= 5;
@@ -612,13 +766,64 @@ void input(unsigned char key, int x, int y){
              glutPostRedisplay();
         }
     }
+    else if (mode==3){
+        if(key=='i'){
+            pos[0] += 0.5*viewdir[0];
+            pos[1] += 0.5*viewdir[1];
+            pos[2] += 0.5*viewdir[2];
+        }
+        else if(key=='k'){
+            pos[0] -= 0.5*viewdir[0];
+            pos[1] -= 0.5*viewdir[1];
+            pos[2] -= 0.5*viewdir[2];
+        }
+        else if(key=='l'){
+            alpha += 0.01;
+            viewdir[0] = cos(alpha);
+            viewdir[2] = sin(alpha);
+        }
+        else if(key=='j'){
+            alpha -= 0.01;
+            viewdir[0] = cos(alpha);
+            viewdir[2] = sin(alpha);
+        }
+        glutPostRedisplay();
+    }
 }
 
+void input_sp (int key, int x, int y){
+    if(key==GLUT_UP){
+        pos[0] += 0.5*viewdir[0];
+        pos[1] += 0.5*viewdir[1];
+        pos[2] += 0.5*viewdir[2];
+    }
+    else if(key==GLUT_DOWN){
+        pos[0] -= 0.5*viewdir[0];
+        pos[1] -= 0.5*viewdir[1];
+        pos[2] -= 0.5*viewdir[2];
+    }
+    else if(key==GLUT_RIGHT_BUTTON){
+            alpha += 0.01;
+        viewdir[0] = cos(alpha);
+        viewdir[2] = sin(alpha);
+    }
+    else if(key==GLUT_LEFT_BUTTON){
+            alpha -= 0.01;
+        viewdir[0] = cos(alpha);
+        viewdir[2] = sin(alpha);
+    }
+    glutPostRedisplay();
+}
 void myinit(){
  glMatrixMode(GL_PROJECTION);
  glLoadIdentity();
- glOrtho(-0.25,42.25,-0.25,8.25, -50, 50);
+ if (mode==3){
+    gluPerspective(70,10,1,100);
+ }else{
+    glOrtho(-0.25,42.25,-0.25,8.25, -50, 50);
+ }
  glMatrixMode(GL_MODELVIEW);
+
  glClearColor(0,0,0,1.0);
  glColor4f(0.0,0.0,1.0, 1.0);
 
@@ -640,8 +845,8 @@ int main(int argc, char* argv[]){
  glutCreateWindow("Segitiga Warna");
  myinit();
  glutKeyboardFunc(input);
+ //glutSpecialFunc(input_sp);
  glutDisplayFunc(display);
-
  glutMainLoop();
  return 0;
 }

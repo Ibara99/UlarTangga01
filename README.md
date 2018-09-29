@@ -47,6 +47,17 @@ v.1.4 (waktu demo_3)
       
       - Kekurangan :
             + rotate harusnya terhadap X dan Y
-            + Tangga mestinya pake rotate :")
+            + Tangga mestinya pake rotate
             + Ular dan tangga tidak mengikuti aturan tangan kanan, akan mempengaruhi cahaya. Untuk demo 4 akan mengurangi nilai. 
-            Clue: gunakan IF (entah untuk apa) :")
+            Clue: gunakan IF (entah untuk apa) 
+v.2.2 (final)
+
+      - Menambah cahaya
+      - Mengubah glcolor menjadi material
+      - Menambah perspektif player;
+      - Menambah glnormal
+      
+      - Kekurangan:
+            Somehow cahayanya ada yg kurang keliatan. gatau apanya.
+
+<End of update>
